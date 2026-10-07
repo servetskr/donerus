@@ -51,7 +51,7 @@ function ustMenu() {
   document.body.appendChild(mm);
   const cubuk = document.createElement('nav');
   cubuk.className = 'mobil-cubuk'; cubuk.setAttribute('aria-label', 'Hızlı işlemler');
-  cubuk.innerHTML = `<a href="menu.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menü</a><a href="iletisim.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Ara</a><a class="vurgu" href="franchise.html#basvuru"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6"/></svg>Bayi Ol</a>`;
+  cubuk.innerHTML = `<a href="menu.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Menü</a><a href="iletisim.html" data-eylem="ara"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Ara</a><a class="vurgu" href="franchise.html#basvuru"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6"/></svg>Bayi Ol</a>`;
   document.body.appendChild(cubuk);
   el.querySelector('.hamburger').onclick = () => mm.classList.add('acik');
   mm.querySelector('.kapat').onclick = () => mm.classList.remove('acik');
@@ -69,7 +69,7 @@ function altBilgi() {
   el.innerHTML = `<div class="kap"><div class="alt-ust">
     <div>${logoHTML(true)}<p style="margin-top:18px;max-width:340px;font-size:15px">İskenderun usulü, bol soslu, tereyağlı döner. Her şubede aynı lezzet.</p>
       <form class="bulten" onsubmit="event.preventDefault();this.innerHTML='<p style=&quot;color:var(--krem)&quot;>Teşekkürler, kampanyalardan ilk siz haberdar olacaksınız.</p>'"><input type="email" required placeholder="E-posta adresiniz" aria-label="E-posta"><button class="btn btn-koz" style="padding:12px 18px">Abone ol</button></form></div>
-    <div><h4>Lezzet</h4><ul><li><a href="menu.html">Menü</a></li><li><a href="qr.html">QR Menü</a></li><li><a href="subeler.html">Şubeler</a></li><li><a href="iletisim.html">Paket servis</a></li></ul></div>
+    <div><h4>Lezzet</h4><ul><li><a href="menu.html">Menü</a></li><li><a href="qr.html">QR Menü</a></li><li><a href="subeler.html">Şubeler</a></li><li><a href="iletisim.html" data-eylem="siparis">Paket servis</a></li></ul></div>
     <div><h4>Kurumsal</h4><ul><li><a href="hikayemiz.html">Lezzetimiz</a></li><li><a href="franchise.html">Franchise</a></li><li><a href="panel.html">Bayi paneli</a></li><li><a href="iletisim.html">İletişim</a></li></ul></div>
     <div><h4>Bize ulaşın</h4><ul><li>[Telefon]</li><li>info@donerus.com.tr</li><li>[Merkez adres]</li></ul></div></div>
     <div class="alt-alt"><span>© 2026 Dönerus · Bu site bir tasarım önerisidir; içerik, fiyat ve şube bilgileri örnektir.</span><span>KVKK · Çerez Politikası · Gizlilik</span></div></div>`;
@@ -124,47 +124,119 @@ function qrMenu() {
   urunDetay(kok, '.qr-oge');
 }
 
-/* ---------- ürün detay penceresi (QR menü ve menü sayfası) ---------- */
-function urunDetay(kok, secici) {
-  const URUNLER = MENU.flatMap(g => g.urunler);
-  const bul = ad => URUNLER.find(u => u.ad === ad);
-  let pen = document.getElementById('urun-pencere');
-  if (!pen) {
-    pen = document.createElement('div'); pen.id = 'urun-pencere'; pen.className = 'urun-pencere'; pen.hidden = true;
-    pen.innerHTML = '<div class="up-perde" data-kapat></div><div class="up-kutu" role="dialog" aria-modal="true" aria-labelledby="up-ad"><button type="button" class="up-kapat" data-kapat aria-label="Kapat">✕</button><div class="up-ic"></div></div>';
-    document.body.appendChild(pen);
-    pen.addEventListener('click', e => {
-      if (e.target.closest('[data-kapat]')) kapat();
-      const y = e.target.closest('[data-yaninda]'); if (y) ac(bul(y.dataset.yaninda));
-    });
-    addEventListener('keydown', e => { if (e.key === 'Escape' && !pen.hidden) kapat(); });
-    addEventListener('popstate', () => { if (!pen.hidden) kapat(true); });
-  }
-  function ac(u) {
-    if (!u) return;
-    const y = u.yaninda && bul(u.yaninda);
-    pen.querySelector('.up-ic').innerHTML = `
-      <div class="up-foto"><img src="${IMG}${u.img}-orta.webp" alt="${u.ad}"></div>
-      <div class="up-metin">
-        ${u.rozet ? `<div class="rozetler">${u.rozet.map(r => `<span class="rozet ${/Yeni|En çok/.test(r) ? 'koz' : ''}">${r}</span>`).join('')}</div>` : ''}
-        <div class="up-baslik"><h2 id="up-ad">${u.ad}</h2><span class="fiyat">${TL(u.fiyat)}</span></div>
-        <p class="up-detay">${u.detay || u.aciklama}</p>
-        <h4>İçindekiler</h4><div class="up-cipler">${u.aciklama.split(/,| ve | ile/).map(x => x.trim()).filter(Boolean).map(x => `<span>${x}</span>`).join('')}</div>
-        ${u.alerjen ? `<h4>Alerjen bilgisi</h4><p class="up-alerjen">${u.alerjen}</p>` : ''}
-        ${y ? `<h4>Yanında iyi gider</h4><button type="button" class="up-yaninda" data-yaninda="${y.ad}"><img src="${IMG}${y.img}-kare.webp" alt=""><span><b>${y.ad}</b><small>${TL(y.fiyat)}</small></span><i>→</i></button>` : ''}
-        <p class="up-not">Siparişinizi garsonumuza iletebilirsiniz.</p>
-      </div>`;
-    pen.querySelector('.up-kutu').scrollTop = 0;
-    if (pen.hidden) { pen.hidden = false; document.documentElement.classList.add('kilit'); history.pushState({ urun: 1 }, ''); requestAnimationFrame(() => pen.classList.add('acik')); pen.querySelector('.up-kapat').focus(); }
-  }
-  function kapat(gecmistenGeldi) {
-    pen.classList.remove('acik'); document.documentElement.classList.remove('kilit');
-    setTimeout(() => { pen.hidden = true; }, 250);
-    if (!gecmistenGeldi && history.state && history.state.urun) history.back();
-  }
-  kok.addEventListener('click', e => { const o = e.target.closest(secici); if (o) ac(bul(o.dataset.urun)); });
-  kok.addEventListener('keydown', e => { const o = e.target.closest(secici); if (o && e.key === 'Enter' && o.tagName !== 'BUTTON') ac(bul(o.dataset.urun)); });
+/* ---------- iletişim bilgileri: marka verince doldurulur, düğmeler kendiliğinden bağlanır ---------- */
+const ILETISIM = {
+  tel: '',          // ör. '+905XXXXXXXXX' → "Ara" düğmeleri doğrudan arar
+  whatsapp: '',     // ör. '905XXXXXXXXX'  → WhatsApp'tan sipariş açılır
+  instagram: '',    // ör. 'donerus'       → Instagram profili açılır
+};
+const HARITA = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+const PLATFORMLAR = [
+  ['Yemeksepeti', 'https://www.yemeksepeti.com/', '#FA0050'],
+  ['Getir Yemek', 'https://getir.com/yemek/', '#5D3EBC'],
+  ['Trendyol Go', 'https://www.trendyol.com/go', '#F27A1A'],
+  ['Migros Yemek', 'https://www.migros.com.tr/yemek', '#F28C00'],
+];
+
+/* ---------- ortak alt pencere ---------- */
+let PEN;
+function pencereKur() {
+  if (PEN) return PEN;
+  PEN = document.createElement('div'); PEN.id = 'urun-pencere'; PEN.className = 'urun-pencere'; PEN.hidden = true;
+  PEN.innerHTML = '<div class="up-perde" data-kapat></div><div class="up-kutu" role="dialog" aria-modal="true"><button type="button" class="up-kapat" data-kapat aria-label="Kapat">✕</button><div class="up-ic"></div></div>';
+  document.body.appendChild(PEN);
+  PEN.addEventListener('click', e => {
+    if (e.target.closest('[data-kapat]')) pencereKapat();
+    const y = e.target.closest('[data-yaninda]'); if (y) urunAc(y.dataset.yaninda);
+    const ey = e.target.closest('[data-eylem]'); if (ey) { e.preventDefault(); eylem(ey.dataset.eylem, ey.dataset); }
+  });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !PEN.hidden) pencereKapat(); });
+  addEventListener('popstate', () => { if (!PEN.hidden) pencereKapat(true); });
+  return PEN;
 }
+function pencereAc(html) {
+  const pen = pencereKur();
+  pen.querySelector('.up-ic').innerHTML = html;
+  pen.querySelector('.up-kutu').scrollTop = 0;
+  if (pen.hidden) { pen.hidden = false; document.documentElement.classList.add('kilit'); history.pushState({ urun: 1 }, ''); requestAnimationFrame(() => pen.classList.add('acik')); pen.querySelector('.up-kapat').focus(); }
+}
+function pencereKapat(gecmistenGeldi) {
+  if (!PEN) return;
+  PEN.classList.remove('acik'); document.documentElement.classList.remove('kilit');
+  setTimeout(() => { PEN.hidden = true; }, 250);
+  if (!gecmistenGeldi && history.state && history.state.urun) history.back();
+}
+
+/* ---------- ürün detayı (QR menü, menü sayfası, anasayfa kartları) ---------- */
+const URUNLER = MENU.flatMap(g => g.urunler);
+function urunAc(ad) {
+  const u = URUNLER.find(x => x.ad === ad);
+  if (!u) return;
+  const y = u.yaninda && URUNLER.find(x => x.ad === u.yaninda);
+  pencereAc(`
+    <div class="up-foto"><img src="${IMG}${u.img}-orta.webp" alt="${u.ad}"></div>
+    <div class="up-metin">
+      ${u.rozet ? `<div class="rozetler">${u.rozet.map(r => `<span class="rozet ${/Yeni|En çok/.test(r) ? 'koz' : ''}">${r}</span>`).join('')}</div>` : ''}
+      <div class="up-baslik"><h2>${u.ad}</h2><span class="fiyat">${TL(u.fiyat)}</span></div>
+      <p class="up-detay">${u.detay || u.aciklama}</p>
+      <h4>İçindekiler</h4><div class="up-cipler">${u.aciklama.split(/,| ve | ile/).map(x => x.trim()).filter(Boolean).map(x => `<span>${x}</span>`).join('')}</div>
+      ${u.alerjen ? `<h4>Alerjen bilgisi</h4><p class="up-alerjen">${u.alerjen}</p>` : ''}
+      ${y ? `<h4>Yanında iyi gider</h4><button type="button" class="up-yaninda" data-yaninda="${y.ad}"><img src="${IMG}${y.img}-kare.webp" alt=""><span><b>${y.ad}</b><small>${TL(y.fiyat)}</small></span><i>→</i></button>` : ''}
+      ${SAYFA === 'qr' ? '<p class="up-not">Siparişinizi garsonumuza iletebilirsiniz.</p>' : '<button type="button" class="btn btn-koz up-siparis" data-eylem="siparis">Sipariş ver →</button>'}
+    </div>`);
+}
+function urunDetay(kok, secici) {
+  kok.addEventListener('click', e => { const o = e.target.closest(secici); if (o && o.dataset.urun) { e.preventDefault(); urunAc(o.dataset.urun); } });
+  kok.addEventListener('keydown', e => { const o = e.target.closest(secici); if (o && e.key === 'Enter' && o.tagName !== 'BUTTON') urunAc(o.dataset.urun); });
+}
+
+/* ---------- hızlı eylemler: ara, sipariş, yol tarifi, instagram ---------- */
+const ICON = {
+  tel: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+  yol: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+};
+function telDugme(etiket, sinif = 'btn-koz') {
+  return ILETISIM.tel
+    ? `<a class="btn ${sinif} ey-tam" href="tel:${ILETISIM.tel}">${ICON.tel} ${etiket}</a>`
+    : `<button type="button" class="btn ${sinif} ey-tam" data-eylem="numara">${ICON.tel} ${etiket}</button>`;
+}
+function eylem(tur, veri = {}) {
+  if (tur === 'ara') {
+    pencereAc(`<div class="up-metin ey">
+      <span class="ust-yazi">Dönerus</span><h2>Bizi arayın</h2>
+      <p class="up-detay">Çağrı merkezimizden ya da size en yakın şubeden sipariş verebilirsiniz.</p>
+      ${telDugme('Çağrı merkezini ara')}
+      <h4>Şubeler</h4>
+      ${SUBELER.map(s => `<div class="ey-sube"><div><b>${s.ad}</b><small>${s.il} · ${s.saat}</small></div>
+        <a class="ey-ikon" href="${HARITA('Dönerus ' + s.ad)}" target="_blank" rel="noopener" aria-label="${s.ad} yol tarifi">${ICON.yol}</a>
+        ${ILETISIM.tel ? `<a class="ey-ikon koz" href="tel:${ILETISIM.tel}" aria-label="${s.ad} ara">${ICON.tel}</a>` : `<button type="button" class="ey-ikon koz" data-eylem="numara" aria-label="${s.ad} ara">${ICON.tel}</button>`}</div>`).join('')}
+    </div>`);
+  } else if (tur === 'siparis') {
+    pencereAc(`<div class="up-metin ey">
+      <span class="ust-yazi">Paket servis</span><h2>Nereden sipariş verelim?</h2>
+      <p class="up-detay">Dönerus'u en sevdiğiniz uygulamada bulun ya da doğrudan şubeyi arayın.</p>
+      <div class="ey-platform">${PLATFORMLAR.map(([a, u, r]) => `<a href="${u}" target="_blank" rel="noopener" style="--r:${r}"><b>${a}</b><span>Siparişe git ↗</span></a>`).join('')}</div>
+      ${ILETISIM.whatsapp ? `<a class="btn ey-tam ey-wp" href="https://wa.me/${ILETISIM.whatsapp}?text=${encodeURIComponent('Merhaba, sipariş vermek istiyorum.')}" target="_blank" rel="noopener">WhatsApp'tan sipariş ver</a>` : ''}
+      ${telDugme('Telefonla sipariş', 'btn-cizgi-koyu')}
+      <a class="btn btn-hardal ey-tam" href="subeler.html">${ICON.yol} Gel-al: en yakın şube</a>
+    </div>`);
+  } else if (tur === 'instagram') {
+    pencereAc(`<div class="ey-ig"><img src="${IMG}ig-profil.webp" alt="Dönerus Instagram profili"></div>
+      <div class="up-metin ey">
+        ${ILETISIM.instagram ? `<a class="btn btn-koz ey-tam" href="https://instagram.com/${ILETISIM.instagram}" target="_blank" rel="noopener">Instagram'da aç ↗</a>` : '<p class="up-not">Örnek profil tasarımı. Marka hesabı eklenince bu düğme doğrudan Instagram\'ı açar.</p>'}
+      </div>`);
+  } else if (tur === 'numara') {
+    const k = PEN && PEN.querySelector('.ey-uyari');
+    const html = '<p class="ey-uyari">📞 Bu bir tasarım önerisi: şube numaraları markadan alınınca bu düğme telefonu doğrudan arar.</p>';
+    if (k) { k.classList.remove('titre'); void k.offsetWidth; k.classList.add('titre'); }
+    else if (PEN && !PEN.hidden) PEN.querySelector('.up-metin').insertAdjacentHTML('afterbegin', html);
+    else pencereAc(`<div class="up-metin ey"><h2>Bizi arayın</h2>${html}</div>`);
+  }
+}
+document.addEventListener('click', e => {
+  const ey = e.target.closest('[data-eylem]');
+  if (ey && !ey.closest('#urun-pencere')) { e.preventDefault(); eylem(ey.dataset.eylem, ey.dataset); }
+});
 
 /* ---------- şubeler ---------- */
 const SUBELER = [
@@ -181,7 +253,7 @@ function subelerSayfasi() {
   const ciz = il => {
     kok.innerHTML = SUBELER.filter(s => il === 'Tümü' || s.il === il).map(s => `<article class="sube"><img src="${IMG}${s.img}-orta.webp" alt="${s.ad} şubesi" loading="lazy"><div class="sube-ic">
       <span class="durum">Şu an açık</span><h3>${s.ad}</h3><p>${s.adres}<br>${s.il} · ${s.saat}</p>
-      <div style="display:flex;gap:10px;margin-top:10px"><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="iletisim.html">Ara</a><a class="btn btn-koz" style="padding:10px 16px;font-size:14px" href="qr.html">Menü</a></div></div></article>`).join('');
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="iletisim.html" data-eylem="ara">Ara</a><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="${HARITA('Dönerus ' + s.ad)}" target="_blank" rel="noopener">Yol tarifi</a><a class="btn btn-koz" style="padding:10px 16px;font-size:14px" href="qr.html">Menü</a></div></div></article>`).join('');
     filtre.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.textContent === il));
   };
   filtre.innerHTML = iller.map(i => `<button aria-pressed="false">${i}</button>`).join('');
@@ -313,5 +385,5 @@ function iletisimFormu() {
   f.onsubmit = e => { e.preventDefault(); f.innerHTML = '<div class="basari aktif"><div class="tik"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#F2E8D8" stroke-width="2.5"><path d="M5 12l5 5 9-10"/></svg></div><h3>Mesajınız bize ulaştı</h3><p style="color:var(--metin-2)">Müşteri ilişkileri ekibimiz en geç bir iş günü içinde size dönecek.</p></div>'; };
 }
 
-ustMenu(); altBilgi(); menuSayfasi(); qrMenu(); subelerSayfasi(); basvuruFormu(); panel(); iletisimFormu();
+ustMenu(); altBilgi(); if (SAYFA === 'anasayfa') urunDetay(document.querySelector('main'), '.j-urun'); menuSayfasi(); qrMenu(); subelerSayfasi(); basvuruFormu(); panel(); iletisimFormu();
 gorunme(); sayaclar();
