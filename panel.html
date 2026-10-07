@@ -1,0 +1,25 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Dönerus">
+<meta property="og:title" content="Franchise Başvuru Paneli · Dönerus"><meta property="og:description" content="İskenderun usulü, bol soslu, tereyağlı döner. Menü, şubeler ve franchise başvurusu.">
+<meta property="og:image" content="https://donerus-oneri.vercel.app/assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Caveat:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css?v=17">
+<meta name="robots" content="noindex">
+<title>Franchise Başvuru Paneli · Dönerus</title></head>
+<body data-sayfa="panel" class="panel-govde">
+<div class="panel-ust"><div class="kap"><a class="logo" href="index.html"><img src="assets/logo/donerus.png" alt="Dönerus" style="height:44px;width:auto"><span style="font-family:var(--serif);font-weight:800;font-size:18px;color:var(--hardal);margin-left:10px;display:inline!important">Franchise Paneli</span></a>
+<div style="display:flex;align-items:center;gap:14px;font-size:14px"><span style="color:#cfc3b2">Franchise Geliştirme</span><span style="width:36px;height:36px;border-radius:50%;background:var(--koz);display:grid;place-items:center;font-weight:700">FG</span></div></div></div>
+<main class="kap" style="padding:36px 0 80px">
+  <div style="display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap"><div><span class="ust-yazi">Başvurular</span><h1 style="font-size:44px;margin-top:8px">Franchise başvuruları</h1></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><input id="panel-ara" placeholder="İsim, il veya başvuru no ara" style="padding:12px 16px;border-radius:999px;border:1.5px solid var(--cizgi);background:#fff;min-width:260px">
+  <select id="panel-durum" style="padding:12px 16px;border-radius:999px;border:1.5px solid var(--cizgi);background:#fff"><option value="">Tüm durumlar</option><option>Yeni</option><option>Görüşme planlandı</option><option>Lokasyon incelemede</option><option>Onaylandı</option><option>Uygun bulunmadı</option></select></div></div>
+  <div class="panel-ozet"><div><b id="o-toplam">0</b><span>Toplam başvuru</span></div><div><b id="o-yeni" style="color:var(--koz)">0</b><span>Yeni, aranmayı bekliyor</span></div><div><b id="o-gorusme">0</b><span>Görüşme ve lokasyon aşamasında</span></div><div><b id="o-onay" style="color:var(--zeytin)">0</b><span>Onaylanan</span></div></div>
+  <div class="tablo-kutu"><table class="tablo"><thead><tr><th>Aday</th><th>Lokasyon</th><th>Tip</th><th>Bütçe</th><th>Ön puan</th><th>Durum</th><th>Tarih</th></tr></thead><tbody id="panel-satirlar"></tbody></table></div>
+  <p style="margin-top:18px;font-size:13px;color:var(--metin-2)">Ön puan; deneyim, mülk durumu ve bütçeye göre otomatik hesaplanır. Satıra tıklayarak ayrıntıyı açın, durum ve not güncelleyin. · <button id="panel-sifirla" style="background:none;border:0;color:var(--koz);font-weight:600;cursor:pointer">Örnek verilere dön</button></p>
+</main>
+<div class="perde" id="perde"></div><aside class="cekmece" id="cekmece" aria-label="Başvuru ayrıntısı"></aside>
+<script src="assets/js/site.js?v=12"></script></body></html>
