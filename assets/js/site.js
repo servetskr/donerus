@@ -138,33 +138,44 @@ const PLATFORMLAR = [
   ['Migros Yemek', 'https://www.migros.com.tr/yemek', '#F28C00'],
 ];
 
-/* ---------- ortak alt pencere ---------- */
-let PEN;
+/* ---------- ortak alt pencere ----------
+   Bilerek tarayıcı geçmişine dokunmuyor (pushState/back yok) ve sayfayı kilitlemiyor:
+   Android'de çift kapanma iki adım geri gidip sayfadan çıkarıyordu. Kapalıyken perde
+   dokunuşları asla yutmaz (pointer-events:none). */
+let PEN, PEN_ZAMAN = 0, PEN_SAYAC;
 function pencereKur() {
   if (PEN) return PEN;
-  PEN = document.createElement('div'); PEN.id = 'urun-pencere'; PEN.className = 'urun-pencere'; PEN.hidden = true;
+  PEN = document.createElement('div'); PEN.id = 'urun-pencere'; PEN.className = 'urun-pencere';
   PEN.innerHTML = '<div class="up-perde" data-kapat></div><div class="up-kutu" role="dialog" aria-modal="true"><button type="button" class="up-kapat" data-kapat aria-label="Kapat">✕</button><div class="up-ic"></div></div>';
   document.body.appendChild(PEN);
   PEN.addEventListener('click', e => {
-    if (e.target.closest('[data-kapat]')) pencereKapat();
-    const y = e.target.closest('[data-yaninda]'); if (y) urunAc(y.dataset.yaninda);
+    e.stopPropagation();
+    if (e.target.closest('[data-kapat]')) {
+      // açılış dokunuşunun perdeye düşmesine karşı kısa koruma
+      if (e.target.classList.contains('up-perde') && Date.now() - PEN_ZAMAN < 450) return;
+      return pencereKapat();
+    }
+    const y = e.target.closest('[data-yaninda]'); if (y) return urunAc(y.dataset.yaninda);
     const ey = e.target.closest('[data-eylem]'); if (ey) { e.preventDefault(); eylem(ey.dataset.eylem, ey.dataset); }
   });
-  addEventListener('keydown', e => { if (e.key === 'Escape' && !PEN.hidden) pencereKapat(); });
-  addEventListener('popstate', () => { if (!PEN.hidden) pencereKapat(true); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') pencereKapat(); });
   return PEN;
 }
 function pencereAc(html) {
   const pen = pencereKur();
+  clearTimeout(PEN_SAYAC);
   pen.querySelector('.up-ic').innerHTML = html;
   pen.querySelector('.up-kutu').scrollTop = 0;
-  if (pen.hidden) { pen.hidden = false; document.documentElement.classList.add('kilit'); history.pushState({ urun: 1 }, ''); requestAnimationFrame(() => pen.classList.add('acik')); pen.querySelector('.up-kapat').focus(); }
+  if (!pen.classList.contains('acik')) PEN_ZAMAN = Date.now();
+  pen.classList.add('gorunur');
+  void pen.offsetWidth;            // geçiş animasyonu için
+  pen.classList.add('acik');
 }
-function pencereKapat(gecmistenGeldi) {
-  if (!PEN) return;
-  PEN.classList.remove('acik'); document.documentElement.classList.remove('kilit');
-  setTimeout(() => { PEN.hidden = true; }, 250);
-  if (!gecmistenGeldi && history.state && history.state.urun) history.back();
+function pencereKapat() {
+  if (!PEN || !PEN.classList.contains('acik')) return;
+  PEN.classList.remove('acik');
+  clearTimeout(PEN_SAYAC);
+  PEN_SAYAC = setTimeout(() => { if (!PEN.classList.contains('acik')) PEN.classList.remove('gorunur'); }, 300);
 }
 
 /* ---------- ürün detayı (QR menü, menü sayfası, anasayfa kartları) ---------- */
@@ -229,7 +240,7 @@ function eylem(tur, veri = {}) {
     const k = PEN && PEN.querySelector('.ey-uyari');
     const html = '<p class="ey-uyari">📞 Bu bir tasarım önerisi: şube numaraları markadan alınınca bu düğme telefonu doğrudan arar.</p>';
     if (k) { k.classList.remove('titre'); void k.offsetWidth; k.classList.add('titre'); }
-    else if (PEN && !PEN.hidden) PEN.querySelector('.up-metin').insertAdjacentHTML('afterbegin', html);
+    else if (PEN && PEN.classList.contains('acik')) PEN.querySelector('.up-metin').insertAdjacentHTML('afterbegin', html);
     else pencereAc(`<div class="up-metin ey"><h2>Bizi arayın</h2>${html}</div>`);
   }
 }
