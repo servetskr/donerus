@@ -28,7 +28,7 @@ body.sunum .cerceve{display:none;border-radius:0;box-shadow:none;width:min(100vw
 body.sunum .cerceve.aktif{display:block;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%)}
 .ipucu{color:#cfa98f;font-size:14px}
 </style></head><body>
-<div class="cubuk"><img src="assets/logo/donerus.png" alt="Dönerus"><div class="sag"><span class="no" id="no">1 / 28</span><button id="sun">▶ Sunum modu</button><a href="assets/doc/donerus-sunum-masaustu.pdf" download>PDF ↓</a><a href="sunum.html">Mobil</a></div></div>
+<div class="cubuk"><img src="assets/logo/donerus.png" alt="Dönerus"><div class="sag"><span class="no" id="no">1 / 28</span><button id="sun">▶ Sunum modu</button><a href="assets/doc/donerus-sunum-masaustu.pdf">PDF ↓</a><a href="sunum.html">Mobil</a></div></div>
 <div class="cerceve"><div class="olcek"><section id="kapak" style="background:#E1261C;color:#FFF6E8;font-family:'DM Sans', Arial, sans-serif;padding:0;display:flex;flex-direction:row">
 <div style="width:1000px;height:1080px;padding:96px;display:flex;flex-direction:column;justify-content:space-between">
 <img src="assets/sunum-pc/donerus_logo_tam.webp" alt="Dönerus logosu" style="width:560px;height:300px;object-fit:contain;object-position:0 50%">
@@ -175,4 +175,7 @@ addEventListener('click',e=>{if(document.body.classList.contains('sunum'))goster
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!document.body.classList.contains('sunum')){i=C.indexOf(e.target);document.getElementById('no').textContent=(i+1)+' / '+C.length;}}),{threshold:.6});
 C.forEach(c=>io.observe(c));
 addEventListener('resize',olcekle);olcekle();history.scrollRestoration='manual';scrollTo(0,0);
-</script></body></html>
+</script><script>/* Android uygulama içi tarayıcılar (WhatsApp, Instagram) PDF açamaz: belge görüntüleyiciye yönlendir */
+(function(){if(!/Android/.test(navigator.userAgent)||!/; wv\)|WhatsApp|Instagram|FBAN|FBAV/.test(navigator.userAgent))return;
+document.querySelectorAll('a[href$=".pdf"]').forEach(function(a){a.removeAttribute('download');a.href='https://docs.google.com/viewer?url='+encodeURIComponent(a.href);});})();</script>
+</body></html>

@@ -208,22 +208,22 @@ function eylem(tur, veri = {}) {
       ${telDugme('Çağrı merkezini ara')}
       <h4>Şubeler</h4>
       ${SUBELER.map(s => `<div class="ey-sube"><div><b>${s.ad}</b><small>${s.il} · ${s.saat}</small></div>
-        <a class="ey-ikon" href="${HARITA('Dönerus ' + s.ad)}" target="_blank" rel="noopener" aria-label="${s.ad} yol tarifi">${ICON.yol}</a>
+        <a class="ey-ikon" href="${HARITA('Dönerus ' + s.ad)}" rel="noopener" aria-label="${s.ad} yol tarifi">${ICON.yol}</a>
         ${ILETISIM.tel ? `<a class="ey-ikon koz" href="tel:${ILETISIM.tel}" aria-label="${s.ad} ara">${ICON.tel}</a>` : `<button type="button" class="ey-ikon koz" data-eylem="numara" aria-label="${s.ad} ara">${ICON.tel}</button>`}</div>`).join('')}
     </div>`);
   } else if (tur === 'siparis') {
     pencereAc(`<div class="up-metin ey">
       <span class="ust-yazi">Paket servis</span><h2>Nereden sipariş verelim?</h2>
       <p class="up-detay">Dönerus'u en sevdiğiniz uygulamada bulun ya da doğrudan şubeyi arayın.</p>
-      <div class="ey-platform">${PLATFORMLAR.map(([a, u, r]) => `<a href="${u}" target="_blank" rel="noopener" style="--r:${r}"><b>${a}</b><span>Siparişe git ↗</span></a>`).join('')}</div>
-      ${ILETISIM.whatsapp ? `<a class="btn ey-tam ey-wp" href="https://wa.me/${ILETISIM.whatsapp}?text=${encodeURIComponent('Merhaba, sipariş vermek istiyorum.')}" target="_blank" rel="noopener">WhatsApp'tan sipariş ver</a>` : ''}
+      <div class="ey-platform">${PLATFORMLAR.map(([a, u, r]) => `<a href="${u}" rel="noopener" style="--r:${r}"><b>${a}</b><span>Siparişe git ↗</span></a>`).join('')}</div>
+      ${ILETISIM.whatsapp ? `<a class="btn ey-tam ey-wp" href="https://wa.me/${ILETISIM.whatsapp}?text=${encodeURIComponent('Merhaba, sipariş vermek istiyorum.')}" rel="noopener">WhatsApp'tan sipariş ver</a>` : ''}
       ${telDugme('Telefonla sipariş', 'btn-cizgi-koyu')}
       <a class="btn btn-hardal ey-tam" href="subeler.html">${ICON.yol} Gel-al: en yakın şube</a>
     </div>`);
   } else if (tur === 'instagram') {
     pencereAc(`<div class="ey-ig"><img src="${IMG}ig-profil.webp" alt="Dönerus Instagram profili"></div>
       <div class="up-metin ey">
-        ${ILETISIM.instagram ? `<a class="btn btn-koz ey-tam" href="https://instagram.com/${ILETISIM.instagram}" target="_blank" rel="noopener">Instagram'da aç ↗</a>` : '<p class="up-not">Örnek profil tasarımı. Marka hesabı eklenince bu düğme doğrudan Instagram\'ı açar.</p>'}
+        ${ILETISIM.instagram ? `<a class="btn btn-koz ey-tam" href="https://instagram.com/${ILETISIM.instagram}" rel="noopener">Instagram'da aç ↗</a>` : '<p class="up-not">Örnek profil tasarımı. Marka hesabı eklenince bu düğme doğrudan Instagram\'ı açar.</p>'}
       </div>`);
   } else if (tur === 'numara') {
     const k = PEN && PEN.querySelector('.ey-uyari');
@@ -253,7 +253,7 @@ function subelerSayfasi() {
   const ciz = il => {
     kok.innerHTML = SUBELER.filter(s => il === 'Tümü' || s.il === il).map(s => `<article class="sube"><img src="${IMG}${s.img}-orta.webp" alt="${s.ad} şubesi" loading="lazy"><div class="sube-ic">
       <span class="durum">Şu an açık</span><h3>${s.ad}</h3><p>${s.adres}<br>${s.il} · ${s.saat}</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="iletisim.html" data-eylem="ara">Ara</a><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="${HARITA('Dönerus ' + s.ad)}" target="_blank" rel="noopener">Yol tarifi</a><a class="btn btn-koz" style="padding:10px 16px;font-size:14px" href="qr.html">Menü</a></div></div></article>`).join('');
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="iletisim.html" data-eylem="ara">Ara</a><a class="btn btn-cizgi" style="padding:10px 16px;font-size:14px" href="${HARITA('Dönerus ' + s.ad)}" rel="noopener">Yol tarifi</a><a class="btn btn-koz" style="padding:10px 16px;font-size:14px" href="qr.html">Menü</a></div></div></article>`).join('');
     filtre.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.textContent === il));
   };
   filtre.innerHTML = iller.map(i => `<button aria-pressed="false">${i}</button>`).join('');
@@ -387,3 +387,7 @@ function iletisimFormu() {
 
 ustMenu(); altBilgi(); if (SAYFA === 'anasayfa') urunDetay(document.querySelector('main'), '.j-urun'); menuSayfasi(); qrMenu(); subelerSayfasi(); basvuruFormu(); panel(); iletisimFormu();
 gorunme(); sayaclar();
+
+/* Android uygulama içi tarayıcılar (WhatsApp, Instagram) PDF açamaz: belge görüntüleyiciye yönlendir */
+(function(){if(!/Android/.test(navigator.userAgent)||!/; wv\)|WhatsApp|Instagram|FBAN|FBAV/.test(navigator.userAgent))return;
+document.querySelectorAll('a[href$=".pdf"]').forEach(function(a){a.removeAttribute('download');a.href='https://docs.google.com/viewer?url='+encodeURIComponent(a.href);});})();
